@@ -1,0 +1,72 @@
+<div class="card border-0 shadow-sm h-100">
+  <div class="table-responsive h-100">
+    <table class="table table-hover align-middle mb-0" [style.minWidth.px]="showActions ? 760 : 640">
+      <thead class="table-light">
+        <tr>
+          <th class="px-3 py-3 text-uppercase small text-secondary">Descrição</th>
+          <th class="px-3 py-3 text-uppercase small text-secondary">Categoria</th>
+          <th class="px-3 py-3 text-uppercase small text-secondary">Data</th>
+          <th class="px-3 py-3 text-uppercase small text-secondary text-end">Valor</th>
+          <th *ngIf="showActions" class="px-3 py-3 text-uppercase small text-secondary text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="visible.length === 0">
+          <td [attr.colspan]="showActions ? 5 : 4" class="px-3 py-4 text-center text-secondary">
+            Nenhuma transação cadastrada.
+          </td>
+        </tr>
+        <tr *ngFor="let transaction of visible">
+          <td class="px-3 py-3 ff-text-strong">{{ transaction.description }}</td>
+          <td class="px-3 py-3">
+            <span [ngClass]="getCategoryColor(transaction.category)">
+              {{ getCategoryName(transaction) }}
+            </span>
+          </td>
+          <td class="px-3 py-3 text-secondary">{{ formatDate(transaction.date) }}</td>
+          <td [ngClass]="transaction.value < 0 ? 'text-danger' : 'text-success'" class="px-3 py-3 text-end fw-semibold">
+            {{ transaction.value < 0 ? '-' : '+' }} {{ formatCurrency(absValue(transaction.value)) }}
+          </td>
+          <td *ngIf="showActions" class="px-3 py-3">
+            <div class="d-flex align-items-center justify-content-end gap-2">
+              <button
+                type="button"
+                [attr.aria-label]="'Editar ' + transaction.description"
+                (click)="selectTransaction(transaction)"
+                class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center"
+              >
+                <app-icon icon="edit" iconsFill="currentColor"></app-icon>
+              </button>
+              <button
+                type="button"
+                [attr.aria-label]="'Excluir ' + transaction.description"
+                (click)="markForDelete(transaction)"
+                class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center"
+              >
+                <app-icon icon="delete" iconsFill="currentColor"></app-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-transaction-modal
+  *ngIf="showActions && selectedTransaction"
+  [isOpen]="true"
+  [transaction]="selectedTransaction"
+  (onClose)="deselectTransaction()"
+  (onSubmit)="handleUpdate($event)"
+></app-transaction-modal>
+
+<app-confirmation-dialog
+  *ngIf="showActions && transactionToDelete"
+  [isOpen]="true"
+  title="Excluir transação"
+  [description]="'Esta ação remove permanentemente a transação ' + transactionToDelete.description + ' da lista.'"
+  confirmLabel="Excluir"
+  (onConfirm)="handleDelete()"
+  (onClose)="transactionToDelete = null"
+></app-confirmation-dialog>

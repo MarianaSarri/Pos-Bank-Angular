@@ -1,0 +1,12 @@
+<section class="d-flex h-100 min-vh-0 flex-column overflow-hidden">
+  <div *ngIf="isLoading" class="d-flex h-100 align-items-center justify-content-center">
+    <div class="ff-spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading && hasError" class="d-flex h-100 flex-column align-items-start gap-3 p-1">
+    <p class="mb-0 ff-text-muted">Ocorreu um erro ao carregar os dados das transações.</p>
+    <button type="button" (click)="retry()" class="btn btn-primary">Tentar novamente</button>
+  </div>
+
+  <app-transactions-table *ngIf="!isLoading && !hasError"></app-transactions-table>
+</section>

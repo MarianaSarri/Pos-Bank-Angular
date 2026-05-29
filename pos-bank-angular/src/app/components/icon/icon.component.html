@@ -1,0 +1,19 @@
+<div
+  class="position-relative d-inline-flex align-items-center justify-content-center flex-shrink-0 ff-icon-wrap"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-hidden]="!ariaLabel"
+>
+  <img
+    [src]="'/' + icon + '.svg'"
+    alt=""
+    width="18"
+    height="18"
+    class="ff-icon-fallback"
+    (error)="icon = 'create'"
+  />
+  <div
+    [style.maskImage]="'url(/' + icon + '.svg)'"
+    class="ff-icon-mask"
+    [style.backgroundColor]="iconsFill || 'currentColor'"
+  ></div>
+</div>

@@ -1,0 +1,6 @@
+.ff-delete-badge {
+  width: 3rem;
+  height: 3rem;
+  background: var(--color-debt-soft);
+  color: var(--color-debt);
+}

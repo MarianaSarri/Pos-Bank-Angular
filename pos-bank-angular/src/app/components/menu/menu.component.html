@@ -1,0 +1,41 @@
+<nav aria-label="Navegação principal" class="app-menu ff-surface border-end p-3 p-lg-4">
+  <div class="d-flex align-items-center gap-2 mb-4">
+    <div class="brand-icon d-inline-flex align-items-center justify-content-center">
+      <app-icon icon="wallet" iconsFill="var(--text-inverse)"></app-icon>
+    </div>
+    <h1 class="h3 m-0 fw-bold ff-text-strong">FinanceFlow</h1>
+  </div>
+
+  <ul class="nav nav-pills flex-column gap-2">
+    <li>
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 fw-semibold"
+        [ngClass]="{
+          'active': isActive('/dashboard'),
+          'text-secondary': !isActive('/dashboard')
+        }"
+      >
+        <app-icon icon="dashboard"></app-icon>
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a
+        routerLink="/transactions"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 fw-semibold"
+        [ngClass]="{
+          'active': isActive('/transactions'),
+          'text-secondary': !isActive('/transactions')
+        }"
+      >
+        <app-icon icon="transaction"></app-icon>
+        Transações
+      </a>
+    </li>
+  </ul>
+</nav>

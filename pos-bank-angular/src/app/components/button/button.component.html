@@ -1,0 +1,8 @@
+<button
+  type="button"
+  (click)="onClick.emit()"
+  [class]="'btn btn-primary d-inline-flex align-items-center justify-content-center gap-2 text-nowrap ' + customClass"
+>
+  <app-icon *ngIf="showIcons" [icon]="iconButton" [iconsFill]="iconsFill"></app-icon>
+  <span class="lh-1">{{ label }}</span>
+</button>

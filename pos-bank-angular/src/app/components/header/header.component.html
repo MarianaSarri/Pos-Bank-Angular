@@ -1,0 +1,15 @@
+<header class="ff-surface border-bottom d-flex align-items-center justify-content-end p-3 p-lg-4">
+  <app-button
+    [label]="'Nova Transação'"
+    [iconButton]="'create'"
+    [iconsFill]="'var(--text-inverse)'"
+    [customClass]="'fw-semibold px-3 py-2'"
+    (onClick)="openModal()"
+  ></app-button>
+
+  <app-transaction-modal
+    [isOpen]="isModalOpen"
+    (onClose)="closeModal()"
+    (onSubmit)="handleAddTransaction($event)"
+  ></app-transaction-modal>
+</header>

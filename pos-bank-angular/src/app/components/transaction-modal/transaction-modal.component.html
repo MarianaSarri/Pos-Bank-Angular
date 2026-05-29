@@ -1,0 +1,110 @@
+<div *ngIf="isOpen" class="ff-backdrop" (click)="onClose.emit()">
+  <div
+    #dialogRef
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'transaction-modal-title'"
+    class="ff-modal-card"
+    (click)="$event.stopPropagation()"
+    (keydown)="handleKeyDown($event)"
+  >
+    <h3 id="transaction-modal-title" #headingRef tabindex="-1" class="h4 mb-4 fw-bold ff-text-strong">
+      {{ isEditing ? 'Editar Transação' : 'Nova Transação' }}
+    </h3>
+
+    <form (ngSubmit)="handleSubmit()">
+      <div class="d-flex flex-column gap-3">
+        <fieldset class="mb-0 transaction-type-fieldset">
+          <legend class="form-label small fw-semibold ff-text-muted mb-1 transaction-type-legend">Tipo</legend>
+          <input required readonly [value]="type" class="visually-hidden" tabindex="-1" />
+          <div class="d-grid gap-2 transaction-type-buttons">
+            <button
+              type="button"
+              (click)="setType('expense')"
+              [ngClass]="{
+                'btn-danger': type === 'expense',
+                'btn-outline-secondary': type !== 'expense'
+              }"
+              class="btn flex-fill"
+            >
+              Despesa
+            </button>
+            <button
+              type="button"
+              (click)="setType('income')"
+              [ngClass]="{
+                'btn-success': type === 'income',
+                'btn-outline-secondary': type !== 'income'
+              }"
+              class="btn flex-fill"
+            >
+              Receita
+            </button>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="transaction-description" class="form-label small fw-semibold ff-text-muted mb-1">
+            Descrição
+          </label>
+          <input
+            id="transaction-description"
+            type="text"
+            required
+            [(ngModel)]="description"
+            name="description"
+            class="form-control"
+            placeholder="Ex: Supermercado"
+          />
+        </div>
+
+        <app-category-combobox
+          [id]="'transaction-category'"
+          [categories]="categoryOptions"
+          [value]="category"
+          (valueChange)="category = $event"
+        ></app-category-combobox>
+
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label for="transaction-value" class="form-label small fw-semibold ff-text-muted mb-1">
+              Valor
+            </label>
+            <input
+              id="transaction-value"
+              type="number"
+              required
+              step="0.01"
+              [(ngModel)]="value"
+              name="value"
+              class="form-control"
+              placeholder="0.00"
+            />
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="transaction-date" class="form-label small fw-semibold ff-text-muted mb-1">
+              Data
+            </label>
+            <input
+              id="transaction-date"
+              type="date"
+              required
+              [(ngModel)]="date"
+              name="date"
+              class="form-control"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 pt-2">
+          <button type="button" (click)="onClose.emit()" class="btn btn-outline-secondary flex-fill">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary flex-fill">
+            {{ isEditing ? 'Salvar Alterações' : 'Salvar Transação' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

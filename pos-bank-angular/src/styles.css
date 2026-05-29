@@ -1,0 +1,157 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+:root {
+  --background: #E4DBDB;
+  --foreground: #868585;
+  --text-strong: #000000;
+  --text-muted: #6b6775;
+  --text-inverse: #ffffff;
+  --font-family-base: Arial, Helvetica, sans-serif;
+  --font-size-caption: 0.75rem;
+  --font-size-body: 0.875rem;
+  --font-size-body-lg: 1rem;
+  --font-size-title-sm: 1.125rem;
+  --font-size-title-md: 1.5rem;
+  --font-size-title-lg: 2rem;
+  --font-size-display: 3rem;
+  --line-height-caption: 1rem;
+  --line-height-body: 1.25rem;
+  --line-height-title: 1.2;
+  --surface: #ffffff;
+  --surface-muted: #f5f5f5;
+  --surface-soft: #f0f0f0;
+  --border-muted: #e5e5e5;
+  --border-strong: #a0a0a0;
+  --color-disabled: #817d84;
+  --color-debt: #b91c1c;
+  --color-credit: #166534;
+  --color-debt-soft: #fdecec;
+  --color-credit-soft: #e9f7ef;
+  --color-info: #1d4ed8;
+  --color-info-soft: #eef4ff;
+  --color-warning: #92400e;
+  --color-warning-soft: #fff5e8;
+  --color-primary: #1d4ed8;
+  --color-primary-soft: #eff6ff;
+  --color-accent: #6f42c1;
+  --color-accent-soft: #f4eefe;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #D9D9D9;
+    --foreground: #868585;
+    --surface: #f4f4f4;
+    --surface-muted: #ebebeb;
+    --surface-soft: #e5e5e5;
+  }
+}
+
+html {
+  font-family: var(--font-family-base);
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: inherit;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+app-root {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.app-shell {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem;
+}
+
+@media (min-width: 992px) {
+  .app-shell {
+    flex-direction: row;
+  }
+
+  .app-content {
+    padding: 2rem;
+  }
+}
+
+.ff-surface {
+  background: var(--surface);
+}
+
+.ff-text-strong {
+  color: var(--text-strong);
+}
+
+.ff-text-muted {
+  color: var(--text-muted);
+}
+
+.ff-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--text-strong) 70%, transparent);
+}
+
+.ff-modal-card {
+  width: 100%;
+  max-width: 32rem;
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.2);
+}
+
+.ff-spinner {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.35rem;
+  border-style: solid;
+  border-color: rgba(29, 78, 216, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

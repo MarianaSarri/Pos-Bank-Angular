@@ -1,0 +1,8 @@
+<div [ngClass]="'card border-0 shadow-sm h-100 ' + (className || '')">
+  <div class="card-body p-4 p-lg-4">
+    <p class="small fw-semibold mb-2 ff-text-muted">{{ title }}</p>
+    <h2 class="display-6 fw-bold mb-0" [style.color]="valueColor">
+      {{ currencySymbol }} {{ amount }}
+    </h2>
+  </div>
+</div>

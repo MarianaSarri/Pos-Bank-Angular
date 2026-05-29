@@ -1,0 +1,30 @@
+<div *ngIf="isOpen" class="ff-backdrop" (click)="onClose.emit()">
+  <div
+    #dialogRef
+    role="alertdialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'confirmation-dialog-title'"
+    [attr.aria-describedby]="'confirmation-dialog-description'"
+    class="ff-modal-card"
+    (click)="$event.stopPropagation()"
+    (keydown)="handleKeyDown($event)"
+  >
+    <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-4 ff-delete-badge">
+      <app-icon icon="delete" iconsFill="var(--color-debt)"></app-icon>
+    </div>
+    <h3 id="confirmation-dialog-title" #headingRef tabindex="-1" class="h4 mb-2 fw-bold ff-text-strong">
+      {{ title }}
+    </h3>
+    <p id="confirmation-dialog-description" class="mb-4 ff-text-muted">
+      {{ description }}
+    </p>
+    <div class="d-flex gap-2">
+      <button type="button" (click)="onClose.emit()" class="btn btn-outline-secondary flex-fill">
+        {{ cancelLabel }}
+      </button>
+      <button type="button" (click)="handleConfirm()" class="btn btn-danger flex-fill">
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>
