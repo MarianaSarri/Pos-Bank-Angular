@@ -1,0 +1,69 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Environment files
+.env
+.env.*
+
+# Editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Angular build output
+/dist
+/tmp
+/out-tsc
+
+# Compiled source
+*.js
+*.js.map
+*.d.ts
+
+# IDE/project files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Angular CLI
+.angular/cache
+
+# Coverage directory
+coverage/
+
+# Optional debugger history
+.vscode/*history*
+
+# System files
+Thumbs.db
