@@ -1,0 +1,32 @@
+﻿trigger:
+  - main
+
+variables:
+  # Set this value as a secret pipeline variable in Azure DevOps, not in YAML.
+  projectRoot: 'pos-bank-angular'
+  nodeVersion: '20.x'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '$(nodeVersion)'
+    displayName: 'Install Node.js'
+
+  - powershell: |
+      Set-Location $(projectRoot)
+      npm ci
+      npm run build-prod
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    displayName: 'Install dependencies and build SPA'
+
+  - task: AzureStaticWebApp@0
+    inputs:
+      app_location: '$(projectRoot)'
+      api_location: ''
+      output_location: 'dist/pos-bank-angular/browser'
+      azure_static_web_apps_api_token: $(deployment_token)
+    displayName: 'Deploy to Azure Static Web Apps'

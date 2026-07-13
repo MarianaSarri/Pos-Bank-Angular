@@ -1,0 +1,26 @@
+<section class="transactions-section">
+  <div *ngIf="isLoading" class="d-flex h-100 align-items-center justify-content-center">
+    <div class="ff-spinner"></div>
+  </div>
+
+  <lib-transactions-table
+    *ngIf="shouldRenderTable && !isLoading && !hasError"
+    [transactions]="transactions"
+    [showActions]="true"
+    [showFilters]="true"
+    [limit]="pageSize"
+    [pageIndex]="currentPage"
+    [pageSize]="pageSize"
+    [totalItems]="totalItems"
+    [categories]="categories"
+    (pageChange)="onPageChange($event)"
+    (filtersChange)="onFiltersChange($event)"
+    (edit)="updateTransaction($event)"
+    (delete)="deleteTransaction($event)"
+  ></lib-transactions-table>
+
+  <div *ngIf="hasError && !isLoading" class="d-flex h-100 flex-column align-items-center justify-content-center">
+    <p class="text-danger">Ocorreu um erro ao carregar as transações.</p>
+    <button class="btn btn-primary" (click)="retry()">Tentar novamente</button>
+  </div>
+</section>

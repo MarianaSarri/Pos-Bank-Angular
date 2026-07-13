@@ -14,7 +14,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "paths": {
+      // "@pos-bank/lib-bank": ["../../Library-bank/library/dist/lib-bank"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -22,6 +25,11 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
+  "exclude": [
+    "node_modules",
+    ".angular",
+    "dist"
+  ],
   "files": [],
   "references": [
     {

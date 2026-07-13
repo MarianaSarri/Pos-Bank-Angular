@@ -15,22 +15,80 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-architects/native-federation:build",
           "options": {
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.css"
+            "watch": false,
+            "cacheExternalArtifacts": true,
+            "allowedCommonJsDependencies": [
+              "@softarc/native-federation"
             ]
           },
           "configurations": {
             "production": {
+              "target": "pos-bank-angular:esbuild:production",
+              "fileReplacements": [
+                {
+                  "replace": "src/env/environment.development.ts",
+                  "with": "src/env/environment.ts"
+                }
+              ]
+            },
+            "development": {
+              "target": "pos-bank-angular:esbuild:development",
+              "dev": true,
+              "devServer": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-architects/native-federation:build",
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "target": "pos-bank-angular:serve-original:development",
+            "rebuildDelay": 500,
+            "cacheExternalArtifacts": true,
+            "dev": true,
+            "devServer": true,
+            "port": 0
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
+        "esbuild": {
+          "builder": "@angular/build:application",
+          "options": {
+            "allowedCommonJsDependencies": [
+              "@softarc/native-federation"
+            ],
+            "outputPath": "dist/pos-bank-angular",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "public/federation.manifest.json",
+              "public/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@pos-bank/lib-bank/src/assets", 
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "polyfills": [
+              "es-module-shims"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -53,20 +111,21 @@
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
+        "serve-original": {
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pos-bank-angular:build:production"
+              "buildTarget": "pos-bank-angular:esbuild:production"
             },
             "development": {
-              "buildTarget": "pos-bank-angular:build:development"
+              "buildTarget": "pos-bank-angular:esbuild:development"
             }
           },
-          "defaultConfiguration": "development"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "public/proxy.config.json",
+            "port": 4201
+          }
         }
       }
     }

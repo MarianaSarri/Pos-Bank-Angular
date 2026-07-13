@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  pos-bank:
+    build:
+      context: ./pos-bank-angular
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    container_name: pos-bank-angular

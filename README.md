@@ -24,7 +24,6 @@ O projeto reúne a interface principal da aplicação financeira, com dashboard,
 - Angular 21
 - TypeScript
 - RxJS
-- Tailwind CSS com PostCSS
 - Vitest para testes
 
 ## Estrutura Principal

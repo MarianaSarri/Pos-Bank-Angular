@@ -1,0 +1,17 @@
+<header class="ff-surface border-bottom d-flex align-items-center justify-content-end p-3 p-lg-4">
+  <lib-button
+    [label]="'Nova Transação'"
+    [iconButton]="'create'"
+    [iconsFill]="'var(--text-inverse)'"
+    [customClass]="'fw-semibold px-3 py-2'"
+    (onClick)="controlModal(true)"
+  ></lib-button>
+
+  <lib-transaction-modal
+    [isOpen]="isModalOpen"
+    (onClose)="controlModal(false)"
+    (onSubmit)="handleAddTransaction($event)"
+    [categories]="categoriesResult"
+  ></lib-transaction-modal>
+</header>
+

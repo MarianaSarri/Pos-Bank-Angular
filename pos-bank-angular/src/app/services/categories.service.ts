@@ -1,32 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Category, CategoriesResult } from '../models/transaction.model';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../env/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/internal/Observable';
+import { CategoriesResult, Category } from '../models/categories.model';
+import { TransactionType } from "../models/transaction.model";
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriesService {
-  private categories: CategoriesResult = {
-    categoriesExpense: [
-      { id: 1, name: 'Alimentação' },
-      { id: 2, name: 'Receita' },
-      { id: 3, name: 'Saúde' },
-      { id: 4, name: 'Contas' },
-    ],
-    categoriesIncome: [
-      { id: 1, name: 'Salário' },
-      { id: 2, name: 'Bônus' },
-      { id: 3, name: 'Investimentos' },
-    ],
-  };
-
+  private http = inject(HttpClient);
   constructor() {}
 
-  getCategories(): CategoriesResult {
-    return this.categories;
-  }
-
-  getCategoryName(categoryId: number, type: 'income' | 'expense'): string | undefined {
-    const list = type === 'income' ? this.categories.categoriesIncome : this.categories.categoriesExpense;
-    return list.find(c => c.id === categoryId)?.name;
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(environment.apiUrl + '/category').pipe
+    (map((categories: Category[]) => {
+      return categories ?? [];
+    }))
   }
 }

@@ -1,0 +1,7 @@
+{
+  "/remoteEntry.json": {
+    "target": "https://calm-plant-08671f61e.7.azurestaticapps.net",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
