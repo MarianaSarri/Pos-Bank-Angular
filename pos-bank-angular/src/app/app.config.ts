@@ -1,14 +1,18 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
+import { provideRouter, withEnabledBlockingInitialNavigation, withPreloading } from '@angular/router';
 import { provideEffects } from '@ngrx/effects';
-import { provideStore } from '@ngrx/store';
+import { provideState, provideStore } from '@ngrx/store';
 
 import { routes } from './app.routes';
+import { TransactionsEffects } from './transactions/state/transactions.effects';
+import { transactionsReducer } from './transactions/state/transactions.reducer';
+import { SelectivePreloadingStrategy } from './core/selective-preloading.strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withEnabledBlockingInitialNavigation()),
+    provideRouter(routes, withEnabledBlockingInitialNavigation(), withPreloading(SelectivePreloadingStrategy)),
     provideStore(),
-    provideEffects(),
+    provideState('transactions', transactionsReducer),
+    provideEffects(TransactionsEffects),
   ]
 };

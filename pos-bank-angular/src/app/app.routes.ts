@@ -15,6 +15,7 @@ export const routes: Routes = [
 	},
   {
     path: 'transactions',
+    data: { preload: true },
     loadChildren: () => 
       import('./transactions/transactions-routing.routes')
         .then(m => m.routes)

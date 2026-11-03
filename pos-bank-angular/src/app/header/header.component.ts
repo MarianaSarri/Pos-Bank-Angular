@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '@pos-bank/lib-bank';
-import { TransactionsService } from '../services/transactions.service';
 import { Transaction, TransactionType } from '../models/transaction.model';
 import { CategoriesService } from '../services/categories.service';
 import { CategoriesResult } from '../models/categories.model';
-import { map, takeUntil } from 'rxjs';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { map, take, takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
+import { createTransaction, createTransactionFailure, createTransactionSuccess } from '../transactions/state/transactions.actions';
 
 @Component({
   selector: 'lib-header',
@@ -17,7 +19,8 @@ import { Subject } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isModalOpen = false;
-  private transactionService = inject(TransactionsService);
+  private store = inject(Store);
+  private actions$ = inject(Actions);
   private categoriesService = inject(CategoriesService);
   categoriesResult: CategoriesResult = { categoriesExpense: [], categoriesIncome: [] };
   private destroy$ = new Subject<void>();
@@ -31,11 +34,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   handleAddTransaction(input: Transaction) {
-    this.transactionService.addTransaction(input).pipe(
+    this.actions$.pipe(
+      ofType(createTransactionSuccess, createTransactionFailure),
+      take(1),
       takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.controlModal(false);
+    ).subscribe((action) => {
+      if (createTransactionSuccess.match(action)) {
+        this.controlModal(false);
+      }
     });
+    this.store.dispatch(createTransaction({ transaction: input }));
   }
 
   private loadCategories() {

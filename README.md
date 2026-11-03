@@ -14,7 +14,7 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 ## Arquitetura
 
 - Frontend: Angular 21 (standalone components)
-- Estado: NgRx (store/effects inicializados no app)
+- Estado: NgRx com feature state/effects para transacoes
 - Integracao HTTP: HttpClient
 - Federacao: @angular-architects/native-federation
 - UI compartilhada: @pos-bank/lib-bank
@@ -38,13 +38,15 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 	- filtro por tipo (receita/despesa/todos)
 	- acoes de edicao e exclusao
 - Carregamento de categorias da API para formularios e filtros.
-- Cache local de transacoes adicionadas/editadas em localStorage.
-- Fallback para API remota quando nao ha dados em cache local.
+- Listagem e mutacoes de transacoes integradas ao estado NgRx e a API remota.
+- Filtros reativos com debounce e cancelamento de consultas obsoletas.
+- Pre-carregamento seletivo da rota local de transacoes, sem antecipar o dashboard remoto.
 
 ## Estrutura do repositorio
 
 - `pos-bank-angular/` aplicacao Angular
 - `pos-bank-angular/src/app/` componentes, rotas, modelos e servicos
+- `pos-bank-angular/src/app/transactions/state/` actions, reducer, selectors e effects de transacoes
 - `pos-bank-angular/src/env/` variaveis de ambiente
 - `docker-compose.yml` orquestracao para execucao em container
 - `azure-pipelines.yml` pipeline de build e deploy em Azure Static Web Apps
@@ -111,4 +113,5 @@ O pipeline em `azure-pipelines.yml`:
 ## Observacoes
 
 - O shell principal depende da disponibilidade do microfrontend remoto de dashboard.
-- A exclusao de transacao atualmente remove do cache local; para persistencia completa, a API deve suportar a operacao de delete.
+- A exclusao agora chama o endpoint `DELETE` da API; a persistencia efetiva depende do suporte desse endpoint no backend.
+- Versoes anteriores podiam deixar transacoes na chave `pos-bank-transactions` do armazenamento do navegador. A aplicacao deixou de ler e gravar essa chave, mas nao a apaga automaticamente para evitar perda de dados locais ainda nao sincronizados.

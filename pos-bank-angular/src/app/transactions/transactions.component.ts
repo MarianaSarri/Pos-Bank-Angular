@@ -1,17 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { TransactionsService } from '../services/transactions.service';
-import { Subject, timer } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '@pos-bank/lib-bank';
 import { CategoriesService } from '../services/categories.service';
 import { Transaction, TransactionType } from '../models/transaction.model';
 import { Category } from '../models/categories.model';
-
-export type TransactionFilters = {
-  search?: string;
-  type?: TransactionType;
-};
+import { deleteTransaction as deleteTransactionAction, loadTransactions as loadTransactionsAction, setTransactionFilters, updateTransaction as updateTransactionAction } from './state/transactions.actions';
+import { selectTransactionsQuery, selectTransactionsViewModel } from './state/transactions.selectors';
 
 @Component({
   selector: 'app-transactions',
@@ -19,27 +16,28 @@ export type TransactionFilters = {
   imports: [CommonModule, ComponentsModule],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
-  changeDetection: ChangeDetectionStrategy.Eager
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransactionsComponent implements OnInit, OnDestroy {
-  isLoading = false;
-  hasError = false;
-  public transactions: Transaction[] = [];
-  public currentPage = 1;
-  public pageSize = 10;
-  public totalItems = 0;
-  public totalPages = 1;
-  public isFirstPage = true;
-  public isLastPage = true;
-  public shouldRenderTable = false;
-  public activeFilters: TransactionFilters = { type: TransactionType.ANY };
   public categories: Category[] = [];
 
   private destroy$ = new Subject<void>();
-
-  private transactionsService = inject(TransactionsService);
+  private store = inject(Store);
   private categoriesService = inject(CategoriesService);
   private cdr = inject(ChangeDetectorRef);
+  private viewModel = this.store.selectSignal(selectTransactionsViewModel);
+  private query = this.store.selectSignal(selectTransactionsQuery);
+
+  get isLoading() { return this.viewModel().isLoading; }
+  get hasError() { return Boolean(this.viewModel().error || this.viewModel().mutationError); }
+  get transactions() { return this.viewModel().data; }
+  get currentPage() { return this.viewModel().page; }
+  get pageSize() { return this.viewModel().limit; }
+  get totalItems() { return this.viewModel().total; }
+  get totalPages() { return this.viewModel().totalPages; }
+  get isFirstPage() { return this.currentPage <= 1; }
+  get isLastPage() { return this.currentPage >= this.totalPages; }
+  get shouldRenderTable() { return this.viewModel().hasLoaded; }
 
   constructor(
 
@@ -48,40 +46,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadCategories();
     this.loadTransactions();
-    this.subscribeToTransactionAdded();
-  }
-
-  private subscribeToTransactionAdded() {
-    this.transactionsService.onTransactionAdded()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.currentPage = 1;
-        this.loadTransactions();
-      });
   }
 
   loadTransactions() {
-    this.isLoading = true;
-    this.hasError = false;
-
-    this.transactionsService.getTransactions(this.currentPage, this.pageSize, this.activeFilters)
-      .pipe(takeUntil(this.destroy$), finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
-      .subscribe({
-        next: (result) => {
-          this.transactions = result.data;
-          this.totalItems = result.total;
-          this.totalPages = result.totalPages;
-          this.isFirstPage = this.currentPage <= 1;
-          this.isLastPage = this.currentPage >= this.totalPages;
-          this.hasError = false;
-          this.shouldRenderTable = true;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error loading transactions:', err);
-          this.hasError = true;
-        }
-      });
+    this.store.dispatch(loadTransactionsAction(this.query()));
   }
 
   goToPage(page: number) {
@@ -89,23 +57,19 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentPage = page;
-    this.loadTransactions();
+    this.store.dispatch(loadTransactionsAction({ ...this.query(), page }));
   }
 
   onPageChange(event: { pageIndex: number; pageSize: number }) {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.loadTransactions();
+    this.store.dispatch(loadTransactionsAction({
+      ...this.query(),
+      page: event.pageIndex,
+      limit: event.pageSize
+    }));
   }
 
   onFiltersChange(filters: { search: string; type: TransactionType }) {
-    this.activeFilters = {
-      search: filters.search,
-      type: filters.type,
-    };
-    this.currentPage = 1;
-    this.loadTransactions();
+    this.store.dispatch(setTransactionFilters({ filters }));
   }
 
   private loadCategories(): void {
@@ -126,15 +90,11 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   retry() {
-    timer(500)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.loadTransactions());
+    this.loadTransactions();
   }
 
   deleteTransaction(transactionId: number) {
-    this.transactionsService.deleteTransaction(transactionId)
-    this.transactions = this.transactions.filter(t => t.id !== transactionId);
-    this.cdr.detectChanges();
+    this.store.dispatch(deleteTransactionAction({ id: transactionId }));
   }
 
   updateTransaction(transaction: Transaction) {
@@ -143,22 +103,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       console.error('Transaction ID is required for update.');
       return;
     }
-    this.transactionsService.updateTransaction(id, transaction)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (value) => {
-          this.transactions = this.transactions.map(t => {
-            if (t.id === id) {
-              t = value;
-            }
-            return t;
-          })
-          this.cdr.detectChanges();
-        },
-        error: () => {
-          this.hasError = true;
-        }
-      });
+    this.store.dispatch(updateTransactionAction({ id, transaction }));
   }
 
 
