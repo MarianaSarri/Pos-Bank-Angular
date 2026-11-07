@@ -29,7 +29,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   private query = this.store.selectSignal(selectTransactionsQuery);
 
   get isLoading() { return this.viewModel().isLoading; }
-  get hasError() { return Boolean(this.viewModel().error || this.viewModel().mutationError); }
+  get loadError() { return this.viewModel().error; }
+  get mutationError() { return this.viewModel().mutationError; }
   get transactions() { return this.viewModel().data; }
   get currentPage() { return this.viewModel().page; }
   get pageSize() { return this.viewModel().limit; }
@@ -37,7 +38,9 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   get totalPages() { return this.viewModel().totalPages; }
   get isFirstPage() { return this.currentPage <= 1; }
   get isLastPage() { return this.currentPage >= this.totalPages; }
-  get shouldRenderTable() { return this.viewModel().hasLoaded; }
+  get hasSucceeded() { return this.viewModel().hasSucceeded; }
+  get isInitialLoading() { return this.isLoading && !this.hasSucceeded; }
+  get shouldRenderTable() { return this.hasSucceeded; }
 
   constructor(
 

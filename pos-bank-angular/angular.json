@@ -71,6 +71,7 @@
               "src/styles.css"
             ],
             "polyfills": [
+              "zone.js",
               "es-module-shims"
             ]
           },

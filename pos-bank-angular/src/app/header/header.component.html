@@ -1,5 +1,14 @@
 <header class="ff-surface border-bottom d-flex align-items-center justify-content-end p-3 p-lg-4">
+  <p *ngIf="authError" class="text-danger mb-0 me-3" role="alert">{{ authError }}</p>
+  <div *ngIf="categoriesError" class="d-flex align-items-center me-3" role="alert">
+    <span class="text-warning-emphasis">{{ categoriesError }}</span>
+    <button class="btn btn-sm btn-outline-warning ms-2" type="button" [disabled]="categoriesLoading" (click)="retryCategories()">
+      {{ categoriesLoading ? 'Tentando...' : 'Recarregar categorias' }}
+    </button>
+  </div>
+  <button *ngIf="isAuthenticated" class="btn btn-outline-secondary me-3" type="button" (click)="logout()">Sair</button>
   <lib-button
+    *ngIf="isAuthenticated"
     [label]="'Nova Transação'"
     [iconButton]="'create'"
     [iconsFill]="'var(--text-inverse)'"
@@ -8,6 +17,7 @@
   ></lib-button>
 
   <lib-transaction-modal
+    *ngIf="isAuthenticated"
     [isOpen]="isModalOpen"
     (onClose)="controlModal(false)"
     (onSubmit)="handleAddTransaction($event)"

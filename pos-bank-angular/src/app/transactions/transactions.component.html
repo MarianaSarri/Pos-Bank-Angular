@@ -1,10 +1,31 @@
 <section class="transactions-section">
-  <div *ngIf="isLoading" class="d-flex h-100 align-items-center justify-content-center">
+  <div *ngIf="isInitialLoading" class="d-flex h-100 align-items-center justify-content-center">
     <div class="ff-spinner"></div>
   </div>
 
+  <div *ngIf="loadError && !hasSucceeded" class="alert alert-danger" role="alert">
+    <p class="mb-2">{{ loadError }}</p>
+    <button class="btn btn-outline-danger" type="button" [disabled]="isLoading" (click)="retry()">
+      {{ isLoading ? 'Tentando...' : 'Tentar novamente' }}
+    </button>
+  </div>
+
+  <div *ngIf="loadError && hasSucceeded" class="alert alert-warning" role="alert">
+    <span>{{ loadError }} Exibindo os dados carregados anteriormente.</span>
+    <button class="btn btn-sm btn-outline-warning ms-3" type="button" [disabled]="isLoading" (click)="retry()">
+      {{ isLoading ? 'Tentando...' : 'Recarregar' }}
+    </button>
+  </div>
+
+  <div *ngIf="mutationError" class="alert alert-warning" role="alert">
+    <span>{{ mutationError }} Nenhuma nova tentativa foi enviada automaticamente.</span>
+    <button class="btn btn-sm btn-outline-warning ms-3" type="button" [disabled]="isLoading" (click)="retry()">
+      Recarregar dados
+    </button>
+  </div>
+
   <lib-transactions-table
-    *ngIf="shouldRenderTable && !isLoading && !hasError"
+    *ngIf="shouldRenderTable"
     [transactions]="transactions"
     [showActions]="true"
     [showFilters]="true"
@@ -19,8 +40,4 @@
     (delete)="deleteTransaction($event)"
   ></lib-transactions-table>
 
-  <div *ngIf="hasError && !isLoading" class="d-flex h-100 flex-column align-items-center justify-content-center">
-    <p class="text-danger">Ocorreu um erro ao carregar as transações.</p>
-    <button class="btn btn-primary" (click)="retry()">Tentar novamente</button>
-  </div>
 </section>

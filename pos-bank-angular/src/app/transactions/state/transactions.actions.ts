@@ -56,3 +56,5 @@ export const deleteTransactionFailure = createAction(
   '[Transactions] Delete Failure',
   props<{ error: string }>()
 );
+
+export const clearTransactionsState = createAction('[Transactions] Clear State');

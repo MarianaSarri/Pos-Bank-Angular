@@ -89,6 +89,14 @@ Variaveis importantes:
 - `apiUrl`: endpoint da API de transacoes/categorias
 - `mfeDashboardUrl`: URL do `remoteEntry.json` do dashboard
 
+## Firebase Authentication
+
+O shell Angular usa Firebase Authentication para login/cadastro com email e senha, redefinicao de senha, restauracao da sessao durante a aba do navegador, logout e desafio MFA TOTP para contas que ja tenham esse fator cadastrado. As rotas `/dashboard` e `/transactions` exigem uma sessao Firebase; esses guards protegem somente a navegacao da interface.
+
+Preencha `firebase.apiKey`, `firebase.authDomain`, `firebase.projectId` e `firebase.appId` nos arquivos de ambiente usando a configuracao de uma aplicacao Web do mesmo projeto Firebase do mobile. Esses valores sao configuracao publica do cliente, nao segredos. Habilite Email/Password em Firebase Console > Authentication. Nunca coloque uma service account ou chave privada no front-end.
+
+**Importante:** a API atual permanece inalterada e nao valida Firebase ID Tokens. Portanto, o login nao protege os endpoints de transacoes nem os dados servidos por essa API. Nao use esses endpoints para dados financeiros reais sem autenticacao e autorizacao implementadas no backend. A sessao web usa persistencia de navegador limitada a sessao; isso nao equivale ao Keychain/Keystore do mobile.
+
 ## Execucao com Docker
 
 Na raiz do repositorio:

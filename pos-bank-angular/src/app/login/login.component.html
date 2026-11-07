@@ -1,0 +1,72 @@
+<main class="auth-page">
+  <section class="auth-panel" aria-labelledby="auth-title">
+    <p class="auth-eyebrow">Pos Bank</p>
+    <h1 id="auth-title">{{ isMfaPending ? 'Verificacao adicional' : isResettingPassword ? 'Redefinir senha' : isRegistering ? 'Criar conta' : 'Entrar' }}</h1>
+
+    <div *ngIf="!auth.isConfigured" class="auth-notice" role="alert">
+      Firebase Auth ainda nao foi configurado neste ambiente. Preencha `firebase` em `src/env/environment.ts` e `environment.development.ts`.
+    </div>
+
+    <ng-container *ngIf="auth.isConfigured">
+      <form *ngIf="isMfaPending; else credentialsForm" [formGroup]="form" (ngSubmit)="submitMfa()">
+        <label for="mfa-code">Codigo do autenticador</label>
+        <input
+          id="mfa-code"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          [formControl]="mfaCode"
+          aria-describedby="mfa-help"
+        />
+        <small id="mfa-help">Digite o codigo TOTP de seis digitos.</small>
+        <button class="auth-submit" type="submit" [disabled]="isSubmitting || mfaCode.invalid">
+          {{ isSubmitting ? 'Verificando...' : 'Confirmar codigo' }}
+        </button>
+        <button class="auth-link" type="button" (click)="cancelMfa()">Voltar ao login</button>
+      </form>
+
+      <ng-template #credentialsForm>
+        <form [formGroup]="form" (ngSubmit)="isResettingPassword ? resetPassword() : submit()">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" formControlName="email" />
+          <small *ngIf="form.controls.email.touched && form.controls.email.invalid">Informe um email valido.</small>
+
+          <ng-container *ngIf="!isResettingPassword">
+            <label for="password">Senha</label>
+            <input
+              id="password"
+              type="password"
+              [attr.autocomplete]="isRegistering ? 'new-password' : 'current-password'"
+              formControlName="password"
+            />
+            <small *ngIf="form.controls.password.touched && form.controls.password.invalid">
+              A senha deve ter pelo menos 6 caracteres.
+            </small>
+          </ng-container>
+
+          <p *ngIf="feedback" class="auth-feedback" [class.auth-success]="!isError" role="status">{{ feedback }}</p>
+
+          <button class="auth-submit" type="submit" [disabled]="isSubmitting || (!isResettingPassword && form.invalid)">
+            {{ isSubmitting ? 'Aguarde...' : isResettingPassword ? 'Enviar link' : isRegistering ? 'Criar conta' : 'Entrar' }}
+          </button>
+
+          <button *ngIf="!isResettingPassword && !isRegistering" class="auth-link" type="button" (click)="isResettingPassword = true; feedback = ''">
+            Esqueci minha senha
+          </button>
+          <button *ngIf="isResettingPassword" class="auth-link" type="button" (click)="isResettingPassword = false; feedback = ''">
+            Voltar ao login
+          </button>
+        </form>
+      </ng-template>
+
+      <p *ngIf="!isMfaPending && !isResettingPassword" class="auth-switch">
+        {{ isRegistering ? 'Ja tem uma conta?' : 'Ainda nao tem uma conta?' }}
+        <button class="auth-link" type="button" (click)="toggleRegistration()">
+          {{ isRegistering ? 'Entrar' : 'Criar conta' }}
+        </button>
+      </p>
+      <p *ngIf="feedback && isMfaPending" class="auth-feedback" role="status">{{ feedback }}</p>
+    </ng-container>
+  </section>
+</main>

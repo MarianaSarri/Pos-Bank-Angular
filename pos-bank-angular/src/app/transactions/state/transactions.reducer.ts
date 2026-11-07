@@ -4,6 +4,7 @@ import {
   createTransaction,
   createTransactionFailure,
   createTransactionSuccess,
+  clearTransactionsState,
   deleteTransaction,
   deleteTransactionFailure,
   deleteTransactionSuccess,
@@ -19,6 +20,7 @@ export interface TransactionsState extends PaginatedTransactionsResponse {
   filters: TransactionFilters;
   isLoading: boolean;
   hasLoaded: boolean;
+  hasSucceeded: boolean;
   error: string | null;
   mutationError: string | null;
 }
@@ -32,12 +34,14 @@ const initialState: TransactionsState = {
   filters: { type: TransactionType.ANY },
   isLoading: false,
   hasLoaded: false,
+  hasSucceeded: false,
   error: null,
   mutationError: null
 };
 
 export const transactionsReducer = createReducer(
   initialState,
+  on(clearTransactionsState, () => initialState),
   on(loadTransactions, (state, { page, limit, filters }) => ({
     ...state,
     page,
@@ -52,6 +56,7 @@ export const transactionsReducer = createReducer(
     ...response,
     isLoading: false,
     hasLoaded: true,
+    hasSucceeded: true,
     error: null
   })),
   on(loadTransactionsFailure, (state, { error }) => ({
