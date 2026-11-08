@@ -12,6 +12,7 @@
   "private": true,
   "packageManager": "npm@11.9.0",
   "dependencies": {
+    "@angular/animations": "21.2.26",
     "@angular/common": "21.2.26",
     "@angular/compiler": "21.2.26",
     "@angular/core": "21.2.26",
