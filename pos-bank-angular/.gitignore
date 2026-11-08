@@ -41,6 +41,7 @@ jspm_packages/
 
 # Compiled source
 *.js
+!/federation.config.js
 *.js.map
 *.d.ts
 
