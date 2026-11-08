@@ -15,18 +15,23 @@ steps:
       versionSpec: '$(nodeVersion)'
     displayName: 'Install Node.js'
 
-  - powershell: |
-      Set-Location $(projectRoot)
+  - bash: |
+      set -euo pipefail
+      cd "$(projectRoot)"
+      node --version
+      npm --version
       npm ci
       npm run build-prod
+      echo "Build step finished."
     env:
       NODE_OPTIONS: --max-old-space-size=6144
     displayName: 'Install dependencies and build SPA'
 
   - task: AzureStaticWebApp@0
     inputs:
-      app_location: '$(projectRoot)'
+      app_location: '$(projectRoot)/dist/pos-bank-angular/browser'
       api_location: ''
-      output_location: 'dist/pos-bank-angular/browser'
+      output_location: ''
+      skip_app_build: true
       azure_static_web_apps_api_token: $(deployment_token)
     displayName: 'Deploy to Azure Static Web Apps'

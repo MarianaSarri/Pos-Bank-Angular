@@ -115,8 +115,9 @@ O pipeline em `azure-pipelines.yml`:
 
 - instala Node 20
 - executa `npm ci`
+- aplica o workaround em `pos-bank-angular/scripts/` para encerrar o processo do Native Federation apos a build
 - executa `npm run build-prod`
-- publica no Azure Static Web Apps
+- publica o bundle gerado no Azure Static Web Apps sem executar outro build
 
 ## Observacoes
 

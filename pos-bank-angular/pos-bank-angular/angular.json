@@ -1,0 +1,134 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "pos-bank-angular": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-architects/native-federation:build",
+          "options": {
+            "watch": false,
+            "cacheExternalArtifacts": true,
+            "allowedCommonJsDependencies": [
+              "@softarc/native-federation"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "target": "pos-bank-angular:esbuild:production"
+            },
+            "development": {
+              "target": "pos-bank-angular:esbuild:development",
+              "dev": true,
+              "devServer": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-architects/native-federation:build",
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "target": "pos-bank-angular:serve-original:development",
+            "rebuildDelay": 500,
+            "cacheExternalArtifacts": true,
+            "dev": true,
+            "devServer": true,
+            "port": 0
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
+        "esbuild": {
+          "builder": "@angular/build:application",
+          "options": {
+            "allowedCommonJsDependencies": [
+              "@softarc/native-federation"
+            ],
+            "outputPath": "dist/pos-bank-angular",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "public/federation.manifest.json",
+              "public/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@pos-bank/lib-bank/src/assets", 
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "polyfills": [
+              "zone.js",
+              "es-module-shims"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/env/environment.ts",
+                  "with": "src/env/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-original": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "pos-bank-angular:esbuild:production"
+            },
+            "development": {
+              "buildTarget": "pos-bank-angular:esbuild:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "public/proxy.config.json",
+            "port": 4201
+          }
+        }
+      }
+    }
+  }
+}
