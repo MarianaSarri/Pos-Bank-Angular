@@ -12,7 +12,7 @@ import { map, take, takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
 import { clearTransactionsState, createTransaction, createTransactionFailure, createTransactionSuccess } from '../transactions/state/transactions.actions';
 import { AuthService } from '../core/auth.service';
-import { getApiErrorMessage } from '../core/api-error-message';
+import { getOperationErrorMessage } from '../core/operation-error-message';
 
 @Component({
   selector: 'lib-header',
@@ -94,7 +94,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.categoriesLoading = false;
       },
       error: (error: unknown) => {
-        this.categoriesError = getApiErrorMessage(error);
+        this.categoriesError = getOperationErrorMessage(error);
         this.categoriesLoading = false;
       }
     });
@@ -105,4 +105,3 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 }
-

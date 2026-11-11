@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withPreloading } from '@angular/router';
 import { provideEffects } from '@ngrx/effects';
@@ -10,6 +11,7 @@ import { SelectivePreloadingStrategy } from './core/selective-preloading.strateg
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(),
     provideRouter(routes, withEnabledBlockingInitialNavigation(), withPreloading(SelectivePreloadingStrategy)),
     provideStore(),
     provideState('transactions', transactionsReducer),

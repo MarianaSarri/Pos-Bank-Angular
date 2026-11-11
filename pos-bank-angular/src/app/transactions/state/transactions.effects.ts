@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, concatMap, debounceTime, distinctUntilChanged, filter, from, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
-import { getApiErrorMessage } from '../../core/api-error-message';
+import { getOperationErrorMessage } from '../../core/operation-error-message';
 import { TransactionsService } from '../../services/transactions.service';
 import {
   createTransaction,
@@ -31,7 +31,7 @@ export class TransactionsEffects {
     ofType(loadTransactions),
     switchMap(({ page, limit, filters }) => this.transactionsService.getTransactions(page, limit, filters).pipe(
       map((response) => loadTransactionsSuccess({ response })),
-      catchError((error: unknown) => of(loadTransactionsFailure({ error: getApiErrorMessage(error) })))
+      catchError((error: unknown) => of(loadTransactionsFailure({ error: getOperationErrorMessage(error) })))
     ))
   ));
 
@@ -61,7 +61,7 @@ export class TransactionsEffects {
         createTransactionSuccess({ transaction: created }),
         loadTransactions({ ...query, page: 1 })
       ])),
-      catchError((error: unknown) => of(createTransactionFailure({ error: getApiErrorMessage(error) })))
+      catchError((error: unknown) => of(createTransactionFailure({ error: getOperationErrorMessage(error) })))
     ))
   ));
 
@@ -73,7 +73,7 @@ export class TransactionsEffects {
         updateTransactionSuccess({ transaction: updated }),
         loadTransactions(query)
       ])),
-      catchError((error: unknown) => of(updateTransactionFailure({ error: getApiErrorMessage(error) })))
+      catchError((error: unknown) => of(updateTransactionFailure({ error: getOperationErrorMessage(error) })))
     ))
   ));
 
@@ -85,7 +85,7 @@ export class TransactionsEffects {
         deleteTransactionSuccess({ id }),
         loadTransactions(query)
       ])),
-      catchError((error: unknown) => of(deleteTransactionFailure({ error: getApiErrorMessage(error) })))
+      catchError((error: unknown) => of(deleteTransactionFailure({ error: getOperationErrorMessage(error) })))
     ))
   ));
 }

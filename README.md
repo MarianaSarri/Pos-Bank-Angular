@@ -15,7 +15,7 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 
 - Frontend: Angular 21 (standalone components)
 - Estado: NgRx com feature state/effects para transacoes
-- Integracao HTTP: HttpClient
+- Persistencia de transacoes: armazenamento local do navegador (`localStorage`)
 - Federacao: @angular-architects/native-federation
 - UI compartilhada: @pos-bank/lib-bank
 
@@ -37,8 +37,8 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 	- filtro por texto
 	- filtro por tipo (receita/despesa/todos)
 	- acoes de edicao e exclusao
-- Carregamento de categorias da API para formularios e filtros.
-- Listagem e mutacoes de transacoes integradas ao estado NgRx e a API remota.
+- Carregamento de categorias de um arquivo JSON local para formularios e filtros.
+- Listagem, criacao, edicao e exclusao de transacoes integradas ao estado NgRx e ao armazenamento local do navegador.
 - Filtros reativos com debounce e cancelamento de consultas obsoletas.
 - Pre-carregamento seletivo da rota local de transacoes, sem antecipar o dashboard remoto.
 
@@ -84,10 +84,11 @@ As configuracoes ficam em:
 - `pos-bank-angular/src/env/environment.ts`
 - `pos-bank-angular/src/env/environment.development.ts`
 
-Variaveis importantes:
+Variavel importante:
 
-- `apiUrl`: endpoint da API de transacoes/categorias
 - `mfeDashboardUrl`: URL do `remoteEntry.json` do dashboard
+
+As transacoes ficam salvas no navegador em `localStorage` e nao dependem de uma API. Os dados sao locais a cada navegador e nao sincronizam entre dispositivos.
 
 ## Firebase Authentication
 
@@ -95,7 +96,7 @@ O shell Angular usa Firebase Authentication para login/cadastro com email e senh
 
 Preencha `firebase.apiKey`, `firebase.authDomain`, `firebase.projectId` e `firebase.appId` nos arquivos de ambiente usando a configuracao de uma aplicacao Web do mesmo projeto Firebase do mobile. Esses valores sao configuracao publica do cliente, nao segredos. Habilite Email/Password em Firebase Console > Authentication. Nunca coloque uma service account ou chave privada no front-end.
 
-**Importante:** a API atual permanece inalterada e nao valida Firebase ID Tokens. Portanto, o login nao protege os endpoints de transacoes nem os dados servidos por essa API. Nao use esses endpoints para dados financeiros reais sem autenticacao e autorizacao implementadas no backend. A sessao web usa persistencia de navegador limitada a sessao; isso nao equivale ao Keychain/Keystore do mobile.
+**Importante:** a autenticacao usa Firebase Authentication, mas as transacoes sao armazenadas somente no navegador e nao sao sincronizadas nem protegidas por um backend. Qualquer pessoa com acesso ao mesmo perfil de navegador pode acessar esses dados. A sessao web usa persistencia limitada a sessao; isso nao equivale ao Keychain/Keystore do mobile.
 
 ## Execucao com Docker
 
@@ -122,5 +123,5 @@ O pipeline em `azure-pipelines.yml`:
 ## Observacoes
 
 - O shell principal depende da disponibilidade do microfrontend remoto de dashboard.
-- A exclusao agora chama o endpoint `DELETE` da API; a persistencia efetiva depende do suporte desse endpoint no backend.
-- Versoes anteriores podiam deixar transacoes na chave `pos-bank-transactions` do armazenamento do navegador. A aplicacao deixou de ler e gravar essa chave, mas nao a apaga automaticamente para evitar perda de dados locais ainda nao sincronizados.
+- Transacoes sao criadas, editadas e excluidas no armazenamento local do navegador; nao ha sincronizacao com servidor.
+- Dados locais antigos em `pos-bank-transactions` continuam sendo lidos. Se estiverem corrompidos ou em formato invalido, a tela informa o erro sem apagar os dados.
