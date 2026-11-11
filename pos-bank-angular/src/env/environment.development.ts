@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://my-json-server.typicode.com/MarianaSarri/db-pos-bank', // URL da API de Desenvolvimento (Local)
+  apiUrl: '', // URL vazia - dados gerenciados por Firebase ou localStorage
    mfeDashboardUrl: 'https://calm-plant-08671f61e.7.azurestaticapps.net/remoteEntry.json', // URL do MFE para produção
   firebase: {
     apiKey: 'AIzaSyCo_JFyI2Nhk1qgtLz6xLQQwiUEW8iyD34',

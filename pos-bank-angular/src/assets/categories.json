@@ -1,0 +1,11 @@
+[
+  { "id": 1, "name": "Alimentação", "type": "expense" },
+  { "id": 2, "name": "Transporte", "type": "expense" },
+  { "id": 3, "name": "Moradia", "type": "expense" },
+  { "id": 4, "name": "Saúde", "type": "expense" },
+  { "id": 5, "name": "Lazer", "type": "expense" },
+  { "id": 6, "name": "Salário", "type": "income" },
+  { "id": 7, "name": "Freelance", "type": "income" },
+  { "id": 8, "name": "Investimentos", "type": "income" },
+  { "id": 9, "name": "Outros", "type": "income" }
+]

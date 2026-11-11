@@ -62,6 +62,11 @@
               "public/federation.manifest.json",
               "public/favicon.ico",
               {
+                "glob": "categories.json",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              {
                 "glob": "**/*",
                 "input": "node_modules/@pos-bank/lib-bank/src/assets", 
                 "output": "assets"
