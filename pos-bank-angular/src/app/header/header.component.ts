@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '@pos-bank/lib-bank';
@@ -24,6 +24,7 @@ import { getOperationErrorMessage } from '../core/operation-error-message';
 export class HeaderComponent implements OnInit, OnDestroy {
   isModalOpen = false;
   authError = '';
+  transactionError = signal('');
   categoriesError = '';
   categoriesLoading = false;
   private store = inject(Store);
@@ -48,6 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   handleAddTransaction(input: Transaction) {
+    this.transactionError.set('');
     this.actions$.pipe(
       ofType(createTransactionSuccess, createTransactionFailure),
       take(1),
@@ -55,6 +57,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ).subscribe((action) => {
       if (action.type === createTransactionSuccess.type) {
         this.controlModal(false);
+      } else {
+        this.transactionError.set(action.error);
       }
     });
     this.store.dispatch(createTransaction({ transaction: input }));

@@ -1,4 +1,5 @@
 <header class="ff-surface border-bottom d-flex align-items-center justify-content-end p-3 p-lg-4">
+  <p *ngIf="transactionError()" class="text-danger mb-0 me-3" role="alert">{{ transactionError() }}</p>
   <p *ngIf="authError" class="text-danger mb-0 me-3" role="alert">{{ authError }}</p>
   <div *ngIf="categoriesError" class="d-flex align-items-center me-3" role="alert">
     <span class="text-warning-emphasis">{{ categoriesError }}</span>

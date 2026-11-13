@@ -125,3 +125,4 @@ O pipeline em `azure-pipelines.yml`:
 - O shell principal depende da disponibilidade do microfrontend remoto de dashboard.
 - Transacoes sao criadas, editadas e excluidas no armazenamento local do navegador; nao ha sincronizacao com servidor.
 - Dados locais antigos em `pos-bank-transactions` continuam sendo lidos. Se estiverem corrompidos ou em formato invalido, a tela informa o erro sem apagar os dados.
+- O estado da lista local e independente do estado `transactions` do dashboard remoto. Apos criar, editar ou excluir uma transacao, o shell solicita ao dashboard que recarregue os dados locais.

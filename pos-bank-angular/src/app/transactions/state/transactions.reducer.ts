@@ -25,6 +25,8 @@ export interface TransactionsState extends PaginatedTransactionsResponse {
   mutationError: string | null;
 }
 
+export const transactionsFeatureKey = 'transactionList';
+
 const initialState: TransactionsState = {
   data: [],
   page: 1,

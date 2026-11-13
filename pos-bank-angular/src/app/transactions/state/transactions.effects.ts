@@ -88,4 +88,10 @@ export class TransactionsEffects {
       catchError((error: unknown) => of(deleteTransactionFailure({ error: getOperationErrorMessage(error) })))
     ))
   ));
+
+  refreshDashboard$ = createEffect(() => this.actions$.pipe(
+    ofType(createTransactionSuccess, updateTransactionSuccess, deleteTransactionSuccess),
+    // The remote dashboard owns its own "transactions" feature and load action.
+    map(() => ({ type: '[Transactions] Load Transactions' }))
+  ));
 }
