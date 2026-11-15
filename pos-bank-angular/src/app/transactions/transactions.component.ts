@@ -4,9 +4,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '@pos-bank/lib-bank';
-import { CategoriesService } from '../services/categories.service';
-import { Transaction, TransactionType } from '../models/transaction.model';
-import { Category } from '../models/categories.model';
+import { CategoriesService } from '../features/categories/application/categories.service';
+import { Category } from '../features/categories/domain/category';
+import { Transaction } from '../models/transaction.model';
+import { TransactionType } from '../shared/domain/transaction-type';
 import { deleteTransaction as deleteTransactionAction, loadTransactions as loadTransactionsAction, setTransactionFilters, updateTransaction as updateTransactionAction } from './state/transactions.actions';
 import { selectTransactionsQuery, selectTransactionsViewModel } from './state/transactions.selectors';
 

@@ -3,8 +3,8 @@ import { Actions } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { of, Subject } from 'rxjs';
 import { AuthService } from '../core/auth.service';
-import { TransactionType } from '../models/transaction.model';
-import { CategoriesService } from '../services/categories.service';
+import { TransactionType } from '../shared/domain/transaction-type';
+import { CategoriesService } from '../features/categories/application/categories.service';
 import { createTransactionFailure, createTransactionSuccess } from '../transactions/state/transactions.actions';
 import { HeaderComponent } from './header.component';
 

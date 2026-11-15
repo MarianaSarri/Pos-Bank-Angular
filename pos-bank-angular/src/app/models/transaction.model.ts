@@ -1,14 +1,6 @@
-export enum TransactionType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-  ANY = 'all'
-}
+import { TransactionType } from '../shared/domain/transaction-type';
 
-export type Category = {
-  id: number;
-  name: string;
-  type: TransactionType;
-};
+export { TransactionType } from '../shared/domain/transaction-type';
 
 export type AttachmentType = 'pdf' | 'png';
 

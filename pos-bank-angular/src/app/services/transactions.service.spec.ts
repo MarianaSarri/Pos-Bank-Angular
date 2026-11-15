@@ -1,7 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import { Transaction, TransactionType } from '../models/transaction.model';
+import { Transaction } from '../models/transaction.model';
+import { TransactionType } from '../shared/domain/transaction-type';
 import { TransactionsService } from './transactions.service';
 
 describe('TransactionsService', () => {
@@ -48,6 +49,20 @@ describe('TransactionsService', () => {
 
     await expect(firstValueFrom(service.getTransactions()))
       .rejects.toThrow('Os dados locais das transacoes estao corrompidos.');
+  });
+
+  it('caches queries in memory and invalidates the cache after a mutation', async () => {
+    await firstValueFrom(service.addTransaction(makeTransaction('Mercado', TransactionType.EXPENSE)));
+    const first = await firstValueFrom(service.getTransactions());
+
+    storage.setItem('pos-bank-transactions', JSON.stringify([
+      ...first.data,
+      { ...makeTransaction('Farmacia', TransactionType.EXPENSE), id: 2 }
+    ]));
+    expect((await firstValueFrom(service.getTransactions())).total).toBe(1);
+
+    await firstValueFrom(service.addTransaction(makeTransaction('Salario', TransactionType.INCOME)));
+    expect((await firstValueFrom(service.getTransactions())).total).toBe(3);
   });
 
   function makeTransaction(description: string, type: TransactionType): Transaction {

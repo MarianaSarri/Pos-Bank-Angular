@@ -15,6 +15,8 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 
 - Frontend: Angular 21 (standalone components)
 - Estado: NgRx com feature state/effects para transacoes
+- Arquitetura: transacoes e categorias separadas em dominio, aplicacao e infraestrutura
+- Cache de consultas: memoria, TTL de 30 segundos, invalidado apos mutacoes
 - Persistencia de transacoes: armazenamento local do navegador (`localStorage`)
 - Federacao: @angular-architects/native-federation
 - UI compartilhada: @pos-bank/lib-bank
@@ -47,6 +49,9 @@ Este repositorio contem o shell principal da aplicacao, responsavel por:
 - `pos-bank-angular/` aplicacao Angular
 - `pos-bank-angular/src/app/` componentes, rotas, modelos e servicos
 - `pos-bank-angular/src/app/transactions/state/` actions, reducer, selectors e effects de transacoes
+- `pos-bank-angular/src/app/transactions/domain/` contrato do repositorio de transacoes
+- `pos-bank-angular/src/app/transactions/infrastructure/` adaptador local e cache de consultas
+- `pos-bank-angular/src/app/features/categories/` dominio, facade e adaptador JSON de categorias
 - `pos-bank-angular/src/env/` variaveis de ambiente
 - `docker-compose.yml` orquestracao para execucao em container
 - `azure-pipelines.yml` pipeline de build e deploy em Azure Static Web Apps
@@ -88,7 +93,7 @@ Variavel importante:
 
 - `mfeDashboardUrl`: URL do `remoteEntry.json` do dashboard
 
-As transacoes ficam salvas no navegador em `localStorage` e nao dependem de uma API. Os dados sao locais a cada navegador e nao sincronizam entre dispositivos.
+As transacoes ficam salvas no navegador em `localStorage` e nao dependem de uma API. Consultas sao mantidas em cache somente na memoria por ate 30 segundos; create/update/delete invalidam o cache. Os dados persistidos continuam locais a cada navegador e nao sincronizam entre dispositivos.
 
 ## Firebase Authentication
 
@@ -96,7 +101,7 @@ O shell Angular usa Firebase Authentication para login/cadastro com email e senh
 
 Preencha `firebase.apiKey`, `firebase.authDomain`, `firebase.projectId` e `firebase.appId` nos arquivos de ambiente usando a configuracao de uma aplicacao Web do mesmo projeto Firebase do mobile. Esses valores sao configuracao publica do cliente, nao segredos. Habilite Email/Password em Firebase Console > Authentication. Nunca coloque uma service account ou chave privada no front-end.
 
-**Importante:** a autenticacao usa Firebase Authentication, mas as transacoes sao armazenadas somente no navegador e nao sao sincronizadas nem protegidas por um backend. Qualquer pessoa com acesso ao mesmo perfil de navegador pode acessar esses dados. A sessao web usa persistencia limitada a sessao; isso nao equivale ao Keychain/Keystore do mobile.
+**Importante:** a autenticacao usa Firebase Authentication, mas as transacoes sao armazenadas somente no navegador e nao sao sincronizadas nem protegidas por um backend. O cache TTL nao persiste em disco, mas os dados-fonte em `localStorage` continuam sem criptografia e acessiveis a scripts da mesma origem. Qualquer pessoa com acesso ao mesmo perfil de navegador pode acessar esses dados. A sessao web usa persistencia limitada a sessao; isso nao equivale ao Keychain/Keystore do mobile.
 
 ## Execucao com Docker
 

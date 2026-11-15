@@ -2,9 +2,10 @@ import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ComponentsModule } from '@pos-bank/lib-bank';
-import { Transaction, TransactionType } from '../models/transaction.model';
-import { CategoriesService } from '../services/categories.service';
-import { CategoriesResult } from '../models/categories.model';
+import { Transaction } from '../models/transaction.model';
+import { CategoriesService } from '../features/categories/application/categories.service';
+import { Category } from '../features/categories/domain/category';
+import { TransactionType } from '../shared/domain/transaction-type';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
@@ -33,7 +34,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private user = toSignal(this.authService.user$, { initialValue: null });
   private router = inject(Router);
   private categoriesService = inject(CategoriesService);
-  categoriesResult: CategoriesResult = { categoriesExpense: [], categoriesIncome: [] };
+  categoriesResult: { categoriesExpense: Category[]; categoriesIncome: Category[] } = {
+    categoriesExpense: [],
+    categoriesIncome: []
+  };
   private destroy$ = new Subject<void>();
 
   ngOnInit() {

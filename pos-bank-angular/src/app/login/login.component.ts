@@ -125,7 +125,10 @@ export class LoginComponent {
       ? returnUrl
       : '/transactions';
     try {
-      await this.router.navigateByUrl(destination);
+      const navigated = await this.router.navigateByUrl(destination);
+      if (!navigated) {
+        this.showError('Autenticacao concluida, mas a rota foi bloqueada. Verifique a sessao e tente acessar Transacoes novamente.');
+      }
     } catch {
       this.showError('Autenticacao concluida, mas nao foi possivel abrir a tela de transacoes. Acesse-a pelo menu.');
     }
